@@ -60,10 +60,10 @@ typedef enum LPS_BDU : uint8_t {
     LPS_BDU_NONCONT = 0b1,
 }LPS_BDU;
 
-typedef enum LPS_LOW_NOISE : uint8_t {
+typedef enum LPS_LOWNOISE : uint8_t {
     LPS_LOW_CURRENT = 0b0,
     LPS_LOW_NOISE = 0b1,
-}LPS_LOW_NOISE;
+}LPS_LOWNOISE;
 
 class LPS22HH {
     private:
@@ -74,7 +74,7 @@ class LPS22HH {
     uint8_t lpsReadBytes(uint8_t regadr, uint8_t* temp, uint8_t length, uint16_t timeout = TIMEOUT_I2C);
     bool lpsWriteByte(uint8_t regadr, uint8_t data);
     void setCTRL_REG1(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu);
-    void setCTRL_REG2(LPS_LOW_NOISE lpsLowNoise);
+    void setCTRL_REG2(LPS_LOWNOISE lpsLowNoise);
     void resetLPS();
     float getPressure(); 
     float getTemperature();

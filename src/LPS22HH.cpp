@@ -55,7 +55,7 @@ void LPS22HH::setCTRL_REG1(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_B
     this->lpsWriteByte(CTRL_REG1, temp);
 }
 
-void LPS22HH::setCTRL_REG2(LPS_LOW_NOISE lpsLowNoise) {
+void LPS22HH::setCTRL_REG2(LPS_LOWNOISE lpsLowNoise) {
     uint8_t temp = 0;
     
     temp |= ((uint8_t)lpsLowNoise << 1);
