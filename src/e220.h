@@ -358,8 +358,8 @@ public:
     Status viewSettings();
 
     Status RFBegin(const uint8_t& HighAddress, const uint8_t& LowAddress, const uint8_t& channel,
-                   const RF_UART_BAUD& baud, const RF_AIR_DATA& airdata, const RF_ONOFF& rssiByte, const RF_PACKET_SIZE& packetsize, const RF_TRANS_MODE& transmode = FIXEDMODE,
-                   const RF_TRANS_POWER& transpower = TRANSMISSIONPOWER_30,  const RF_WIRELESS& wirelesswake = WIRELESSWAKEUP_500, const RF_UART_PARITY& parity = UARTPARITY_8N1,
-                   const RF_ONOFF& rssiAmbient = RF_OFF, const RF_ONOFF& ltb = RF_OFF);
+                   const RF_UART_BAUD& baud, const RF_AIR_DATA& airdata, const RF_ONOFF& rssiByte, const RF_PACKET_SIZE& packetsize, const RF_TRANS_MODE& transmode,
+                   const RF_TRANS_POWER& transpower,  const RF_WIRELESS& wirelesswake, const RF_UART_PARITY& parity,
+                   const RF_ONOFF& rssiAmbient, const RF_ONOFF& ltb);
     Status RFStart();
 };

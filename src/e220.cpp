@@ -870,6 +870,8 @@ Status E220::checker(){
     maxTxConverter();
     rssiByteChecker();
     rssiAmbientChecker();
+
+    return E220_Success;
 }
 
 Status E220::rssiByteChecker(){
@@ -1228,6 +1230,8 @@ Status E220::findLeastFrequency(){
     DebuggerPort->print(minRssi); DebuggerPort->println(F(" dBm"));
 
     DebuggerPort->println(F("-------------------------------------------------------"));
+
+    return E220_Success;
 }
 
 float E220::checkFreq(const RF_FREQ &freq){
@@ -1254,4 +1258,6 @@ float E220::checkFreq(const RF_FREQ &freq){
     RFSerialPort->readBytes(buffer, sizeof(buffer));
 
     rssiValue = -1.0f * (float)buffer[3] / 2.0f;
+
+    return rssiValue;
 }
