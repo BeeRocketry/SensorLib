@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "debugprinter.h"
 #include "I2Class.h"
+#include "DataTypes.h"
 
 #define BNO_REG_PAGE_CHANGE             0x07
 
@@ -304,18 +305,6 @@ struct BNO_STR_REGISTERS{
     BNO_STR_PAGE_1 registersPage_1;
 };
 
-struct BNO_DOF3_Float{
-    float x = 0;
-    float y = 0;
-    float z = 0;
-};
-
-struct BNO_DOF3_int16{
-    int16_t x;
-    int16_t y;
-    int16_t z;
-};
-
 struct BNO_Calib_Status{
     uint8_t systemCalib = 0;
     uint8_t accCalib = 0;
@@ -366,10 +355,10 @@ public:
     BNO_OPERATIONMODE getOperationMode(void);
 
     BNO_Calib_Status getCalibrationStatus();
-    BNO_DOF3_int16 getRawGyroData();
-    BNO_DOF3_Float getAccData();
-    BNO_DOF3_Float getGyroData();
-    BNO_DOF3_Float getMagData();
+    imuData_int16 getRawGyroData();
+    imuData_float getAccData();
+    imuData_float getGyroData();
+    imuData_float getMagData();
     void GyroCalibration(uint32_t numSample);
 
     void BnoReset();

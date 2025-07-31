@@ -137,9 +137,9 @@ BNO_Calib_Status Bno055::getCalibrationStatus(){
     return tempStat;
 }
 
-BNO_DOF3_Float Bno055::getAccData(){
-    BNO_DOF3_int16 accData;
-    BNO_DOF3_Float returnData;
+imuData_float Bno055::getAccData(){
+    imuData_int16 accData;
+    imuData_float returnData;
     uint8_t buffer[6];
 
     bnoReadBytes(BNO_REG_ACC_DATA_X_LSB, buffer, 6, TIMEOUT_I2C);
@@ -155,9 +155,9 @@ BNO_DOF3_Float Bno055::getAccData(){
     return returnData;
 }
 
-BNO_DOF3_int16 Bno055::getRawGyroData(){
+imuData_int16 Bno055::getRawGyroData(){
     uint8_t buffer[6];
-    BNO_DOF3_int16 gyroData;
+    imuData_int16 gyroData;
 
     bnoReadBytes(BNO_REG_GYRO_DATA_X_LSB, buffer, 6, TIMEOUT_I2C);
 
@@ -168,9 +168,9 @@ BNO_DOF3_int16 Bno055::getRawGyroData(){
     return gyroData;
 }
 
-BNO_DOF3_Float Bno055::getGyroData(){
-    BNO_DOF3_int16 gyroData;
-    BNO_DOF3_Float returnData;
+imuData_float Bno055::getGyroData(){
+    imuData_int16 gyroData;
+    imuData_float returnData;
     uint8_t buffer[6];
 
     bnoReadBytes(BNO_REG_GYRO_DATA_X_LSB, buffer, 6, TIMEOUT_I2C);
@@ -190,9 +190,9 @@ BNO_DOF3_Float Bno055::getGyroData(){
     return returnData;
 }
 
-BNO_DOF3_Float Bno055::getMagData(){
-    BNO_DOF3_int16 magData;
-    BNO_DOF3_Float returnData;
+imuData_float Bno055::getMagData(){
+    imuData_int16 magData;
+    imuData_float returnData;
     uint8_t buffer[6];
 
     bnoReadBytes(BNO_REG_MAG_DATA_X_LSB, buffer, 6, TIMEOUT_I2C);
@@ -213,7 +213,7 @@ BNO_DOF3_Float Bno055::getMagData(){
 }
 
 void Bno055::GyroCalibration(uint32_t numSample){
-    BNO_DOF3_int16 gyro;
+    imuData_int16 gyro;
     int16_t gyromin[3] = {32767 , 32767 , 32767};
     int16_t gyromax[3] = {-32767 , -32767 , -32767};
     for(int i = 0; i < numSample; i++){
