@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include <string>
 
 #define MAX_TX_BUFFER_SIZE 200L
 #define MAX_TX_BUFFER_SIZE_CRC (this->maxTxBufferSize - 1)
@@ -232,7 +233,7 @@ struct ConfigRF{
 struct RF_Msg{
     Status status = E220_Timeout;
     uint8_t buffer[MAX_TX_BUFFER_SIZE] = {0};
-    std::string message;
+    String message;
     bool isMessage = false;
     uint8_t size = 0;
     int8_t rssiValue = -1;
