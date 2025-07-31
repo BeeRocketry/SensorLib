@@ -52,7 +52,7 @@ void L76::getData(){
     }
 }
 
-L76_Data L76::getDataStruct() const {
+GpsData L76::getDataStruct() const {
     return this->data;
 }
 

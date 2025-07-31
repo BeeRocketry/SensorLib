@@ -1,18 +1,7 @@
 #include <Arduino.h>
 #include "HardwareSerial.h"
 #include "TinyGPSPlus.h"
-
-struct L76_Data{
-    double latitude = 0.0;
-    double longitude = 0.0;
-    double altitude = 0.0;
-    float speed = 0.0f;
-    float course = 0.0f;
-    int satellites = 0;
-    int hdop = 0;
-    unsigned long time = 0;
-    unsigned long date = 0;
-};
+#include "DataTypes.h"
 
 class L76 {
 private:
@@ -26,7 +15,7 @@ private:
 
     bool dynamicSerial = false;
 
-    L76_Data data;
+    GpsData data;
 
 public:
     L76(HardwareSerial *serial);
@@ -40,5 +29,5 @@ public:
     void printData() const;
     void setTimeoutRx(time_t timeout);
 
-    L76_Data getDataStruct() const;
+    GpsData getDataStruct() const;
 };
