@@ -152,6 +152,10 @@ Status E220::setPinConfig(const int8_t &m0, const int8_t &m1, const int8_t &aux)
     this->_pinConfs.M0Pin = m0;
     this->_pinConfs.M1Pin = m1;
     this->_pinConfs.AUXPin = aux;
+
+    pinMode(this->_pinConfs.M0Pin, OUTPUT);
+    pinMode(this->_pinConfs.M1Pin, OUTPUT);
+    pinMode(this->_pinConfs.AUXPin, INPUT_PULLUP);
     return E220_Success;
 }
 
