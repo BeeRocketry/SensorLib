@@ -1099,6 +1099,9 @@ RF_Msg E220::receive() const{
 
     bool finish = false;
 
+    bool statusFlag = false;
+    bool isStatus = false;
+
     RF_Msg msg;
     uint8_t i = 0;
 
@@ -1107,6 +1110,15 @@ RF_Msg E220::receive() const{
     while(true){
         if(this->RFSerialPort->available() > 0){
             uint8_t data = this->RFSerialPort->read();
+
+            if(data != 'c'){
+                statusFlag = true;
+            }
+
+            if(statusFlag == false && i == 2){
+                isStatus = true;
+                msg.isMessage = true;
+            }
 
             if(finish == true){
                 msg.rssiValue = data;
@@ -1132,6 +1144,9 @@ RF_Msg E220::receive() const{
 
             if(highCheck && midCheck && lowCheck){
                 msg.buffer[i] = data;
+                if(isStatus){
+                    msg.message += (char)data;
+                }
 
                 if(this->rssiByteSet == false){
                     break;
@@ -1142,6 +1157,9 @@ RF_Msg E220::receive() const{
             }
 
             msg.buffer[i++] = data;
+            if(isStatus){
+                msg.message += (char)data;
+            }
         }
 
         if(millis() - startTime > this->_paramConfs.serialTimeout){
@@ -1200,6 +1218,18 @@ Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const u
     clearSerialBuffer();
 
     return E220_Success;
+}
+
+Status E220::sendStatus(const uint8_t& AddressHigh, const uint8_t& AddressLow, const uint8_t& Channel, std::string message){
+    uint8_t buffer[message.length() + 3];
+
+    buffer[0] = 'c';
+    buffer[1] = 'c';
+    buffer[2] = 'c';
+
+    memcpy(&buffer[3], message.c_str(), message.length());
+
+    send(AddressHigh, AddressLow, Channel, buffer, message.length() + 3);
 }
 
 Status E220::findLeastFrequency(){

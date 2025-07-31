@@ -232,6 +232,8 @@ struct ConfigRF{
 struct RF_Msg{
     Status status = E220_Timeout;
     uint8_t buffer[MAX_TX_BUFFER_SIZE] = {0};
+    std::string message;
+    bool isMessage = false;
     uint8_t size = 0;
     int8_t rssiValue = -1;
     float rssiDbm = 0.0f;
@@ -337,6 +339,7 @@ public:
     Status sendBroadcastDataPacket(const uint8_t& Channel, const uint8_t *data, const size_t& size);
     Status sendTransparentDataPacket(uint8_t *data, const size_t& size);
     Status send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const uint8_t& Channel, const uint8_t* data, int size);
+    Status sendStatus(const uint8_t& AddressHigh, const uint8_t& AddressLow, const uint8_t& Channel, std::string message);
 
     Status findLeastFrequency();
     float checkFreq(const RF_FREQ &freq);
