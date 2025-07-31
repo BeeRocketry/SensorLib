@@ -1,3 +1,6 @@
+#ifndef E32_H
+#define E32_H
+
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
@@ -277,3 +280,5 @@ public:
                    const RF_FEC& fecmode, const RF_TRANS_POWER& transpower);
     Status RFStart();
 };
+
+#endif

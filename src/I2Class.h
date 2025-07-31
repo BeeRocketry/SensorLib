@@ -1,4 +1,5 @@
-#pragma once
+#ifndef I2CLASS_H
+#define I2CLASS_H
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -23,3 +24,5 @@ public:
     I2Class(uint8_t sda, uint8_t scl);
     ~I2Class();
 };
+
+#endif

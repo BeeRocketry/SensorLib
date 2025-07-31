@@ -1,3 +1,6 @@
+#ifndef L76_H
+#define L76_H
+
 #include <Arduino.h>
 #include "HardwareSerial.h"
 #include "TinyGPSPlus.h"
@@ -31,3 +34,5 @@ public:
 
     GpsData getDataStruct() const;
 };
+
+#endif

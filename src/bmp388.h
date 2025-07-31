@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BMP388_H
+#define BMP388_H
 
 #include <Arduino.h>
 #include "I2Class.h"
@@ -180,3 +181,5 @@ public:
     BaroData BMPGetData();
     uint8_t getBMPChipID();
 };
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BNO055_H
+#define BNO055_H
 
 #include <Arduino.h>
 #include "debugprinter.h"
@@ -363,3 +364,5 @@ public:
 
     void BnoReset();
 };
+
+#endif

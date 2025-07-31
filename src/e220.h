@@ -1,3 +1,6 @@
+#ifndef E220_H
+#define E220_H
+
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
@@ -363,3 +366,5 @@ public:
                    const RF_ONOFF& rssiAmbient, const RF_ONOFF& ltb);
     Status RFStart();
 };
+
+#endif
