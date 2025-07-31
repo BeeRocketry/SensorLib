@@ -47,4 +47,12 @@ typedef struct GpsData{
 }GpsData;
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+typedef struct GpsDataSimplified{
+    double latitude = 0.0;
+    double longitude = 0.0;
+    double altitude = 0.0;
+}GpsDataSimplified;
+#pragma pack(pop)
+
 #endif
