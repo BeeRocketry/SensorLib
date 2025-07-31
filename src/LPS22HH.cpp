@@ -16,6 +16,16 @@ bool LPS22HH::lpsWriteByte(uint8_t regadr, uint8_t data){
     return this->i2c->I2CWriteByte(CHIP_ADDRESS, regadr, data);
 }
 
+BaroData LPS22HH::LPSGetData() {
+    BaroData tempData = {0};
+
+    tempData.temperature = this->getTemperature();
+    tempData.pressure = this->getPressure();
+    tempData.altitude = this->getAltitude(tempData.pressure);
+
+    return tempData;
+}
+
 float LPS22HH::getPressure() {
     uint8_t buffer[3] = {0};
     uint32_t press_data = 0;

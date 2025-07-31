@@ -146,12 +146,6 @@ typedef struct{
     int8_t T3;
 }BMP_CalibData;
 
-typedef struct{
-    float temperature;
-    float pressure;
-    float altitude;
-}BMP_SensorData;
-
 class Bmp388
 {
 private:
@@ -181,9 +175,8 @@ public:
     
     void setReset();
     float getTempData();
-    float getPresData();
-    float getPresData(uint32_t);
+    float getPresData(bool tempStatus = true);
     float getAltitude(float pressure);
-    BMP_SensorData BMPGetData();
+    BaroData BMPGetData();
     uint8_t getBMPChipID();
 };

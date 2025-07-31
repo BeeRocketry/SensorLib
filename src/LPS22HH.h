@@ -82,6 +82,8 @@ public:
     float getTemperature();
     float getAltitude(float pressure);
     bool readWhoAmI();
+
+    BaroData LPSGetData();
 };
 
 #endif

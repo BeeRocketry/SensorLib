@@ -192,8 +192,9 @@ float Bmp388::getTempData(){
     return QuantizedDataPointer->tfine;
 }
 
-float Bmp388::getPresData(){
-    this->getTempData();
+float Bmp388::getPresData(bool tempStatus){
+    if(tempStatus == false)
+        this->getTempData();
     uint32_t presRaw = this->getPresRaw();
     float compPress;
 
@@ -231,17 +232,14 @@ float Bmp388::getAltitude(float pressure){
     return altitude;
 }
 
-BMP_SensorData Bmp388::BMPGetData(){
-    uint32_t rawPress, rawTemp;
-    BMP_SensorData sensorData;
+BaroData Bmp388::BMPGetData(){
+    BaroData tempData = {0};
 
-    memset(&sensorData, 0, sizeof(BMP_SensorData));
+    tempData.temperature = this->getTempData();
+    tempData.pressure = this->getPresData(true);
+    tempData.altitude = this->getAltitude(tempData.pressure);
 
-    sensorData.temperature = this->getTempData();
-    sensorData.pressure = this->getPresData();
-    sensorData.altitude = this->getAltitude(sensorData.pressure);
-
-    return sensorData;
+    return tempData;
 }
 
 uint8_t Bmp388::getBMPChipID(){
