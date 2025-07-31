@@ -2,6 +2,7 @@
 #define LPS22HH_H
 
 #include "I2Class.h"
+#include "DataTypes.h"
 
 #define SeaLevelhPa 1013.25
 
@@ -66,11 +67,12 @@ typedef enum LPS_LOWNOISE : uint8_t {
 }LPS_LOWNOISE;
 
 class LPS22HH {
-    private:
-        I2Class* i2c;
-    public:
+private:
+    I2Class* i2c;
+public:
     LPS22HH(I2Class* _i2c);
 
+    void LPSInit(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu, LPS_LOWNOISE lpsLowNoise);
     uint8_t lpsReadBytes(uint8_t regadr, uint8_t* temp, uint8_t length, uint16_t timeout = TIMEOUT_I2C);
     bool lpsWriteByte(uint8_t regadr, uint8_t data);
     void setCTRL_REG1(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu);

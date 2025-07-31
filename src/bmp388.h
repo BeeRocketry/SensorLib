@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "I2Class.h"
 #include "debugprinter.h"
+#include "DataTypes.h"
 
 #define SeaLevelhPa 1013.25
 

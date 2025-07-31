@@ -4,6 +4,11 @@ LPS22HH::LPS22HH(I2Class* _i2c) {
     this->i2c = _i2c;
 }
 
+void LPS22HH::LPSInit(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu, LPS_LOWNOISE lpsLowNoise){
+    this->setCTRL_REG1(odrRate, lpfp, bdu);
+    this->setCTRL_REG2(lpsLowNoise);
+}
+
 uint8_t LPS22HH::lpsReadBytes(uint8_t regadr, uint8_t* temp, uint8_t length, uint16_t timeout){
     return this->i2c->I2CReadBytes(CHIP_ADDRESS, regadr, temp, length, timeout);
 }
