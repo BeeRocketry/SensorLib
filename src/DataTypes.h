@@ -19,4 +19,10 @@ typedef struct imuData_int16{
     int16_t z;
 };
 
+typedef struct ImuData{
+    imuData_float acc;
+    imuData_float gyro;
+    imuData_float mag;
+}
+
 #endif
