@@ -1281,11 +1281,12 @@ RF_Msg E220::receive() const{
             }
 
             if(statusFlag == false && i == 2){
+                this->DebuggerPort->println(F("StatusText tespit edildi."));
                 isStatus = true;
                 msg.isMessage = true;
             }
 
-            if(finish == true){
+            if(this->rssiByteSet == true && finish == true){
                 msg.rssiValue = data;
                 msg.rssiDbm = -((float)data) / 2.0f;
                 break;
@@ -1308,11 +1309,6 @@ RF_Msg E220::receive() const{
             }
 
             if(highCheck && midCheck && lowCheck){
-                msg.buffer[i] = data;
-                if(isStatus){
-                    msg.message += (char)data;
-                }
-
                 if(this->rssiByteSet == false){
                     break;
                 }
@@ -1321,9 +1317,10 @@ RF_Msg E220::receive() const{
                 continue;
             }
 
-            msg.buffer[i++] = data;
-            if(isStatus){
-                msg.message += (char)data;
+            if(highCheck != true){
+                msg.buffer[i++] = data;
+                if(isStatus && i > 2)
+                    msg.message += (char)data;
             }
         }
 
@@ -1343,7 +1340,7 @@ RF_Msg E220::receive() const{
     }
 
     msg.crc = crc;
-    msg.size = size - 1;
+    msg.size = size;
 
     msg.status = E220_Success;
 
@@ -1351,6 +1348,8 @@ RF_Msg E220::receive() const{
 }
 
 Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const uint8_t& Channel, const uint8_t* data, int size){
+    RF_PackageTimerCheck();
+    
     if(size > this->maxTxBufferSize - 7){
         this->DebuggerPort->println(F("Paket Boyutu Cok Buyuk !!!"));
         return E220_BigPacket;
