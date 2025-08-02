@@ -8,6 +8,16 @@ L76::L76(HardwareSerial *serial, HardwareSerial *debugger) : serialPort(serial),
     GPS = new TinyGPSPlus();
 }
 
+L76::L76(SoftwareSerial *serial) : serialSoftPort(serial) {
+    GPS = new TinyGPSPlus();
+    isSoftware = true;
+}
+
+L76::L76(SoftwareSerial *serial, HardwareSerial *debugger) : serialSoftPort(serial), debuggerPort(debugger) {
+    GPS = new TinyGPSPlus();
+    isSoftware = true;
+}
+
 L76::L76(uint8_t rxPin, uint8_t txPin) {
     serialPort = new HardwareSerial(rxPin, txPin);
     GPS = new TinyGPSPlus();
@@ -26,27 +36,52 @@ L76::~L76() {
 }
 
 void L76::begin(){
-    this->serialPort->begin(9600, SERIAL_8N1);
+    if(isSoftware)
+        this->serialSoftPort->begin(9600);
+    else
+        this->serialPort->begin(9600, SERIAL_8N1);
 }
 
 void L76::getData(){
     time_t startTime = millis();
     while (millis() - startTime < this->paramConfs.serialTimeout) {
-        while (this->serialPort->available()) {
-            char c = this->serialPort->read();
-            if (GPS->encode(c)) {
-                if (GPS->location.isUpdated()) {
-                    this->data.latitude = GPS->location.lat();
-                    this->data.longitude = GPS->location.lng();
-                    this->data.altitude = GPS->altitude.meters();
-                    this->data.speed = GPS->speed.kmph();
-                    this->data.course = GPS->course.deg();
-                    this->data.satellites = GPS->satellites.value();
-                    this->data.hdop = GPS->hdop.hdop();
-                    this->data.time = GPS->time.value();
-                    this->data.date = GPS->date.value();
+
+        if(isSoftware){
+            while (this->serialSoftPort->available()) {
+                char c = this->serialSoftPort->read();
+                if (GPS->encode(c)) {
+                    if (GPS->location.isUpdated()) {
+                        this->data.latitude = GPS->location.lat();
+                        this->data.longitude = GPS->location.lng();
+                        this->data.altitude = GPS->altitude.meters();
+                        this->data.speed = GPS->speed.kmph();
+                        this->data.course = GPS->course.deg();
+                        this->data.satellites = GPS->satellites.value();
+                        this->data.hdop = GPS->hdop.hdop();
+                        this->data.time = GPS->time.value();
+                        this->data.date = GPS->date.value();
+                    }
+                    return;
                 }
-                return;
+            }
+        }
+        else{
+            while (this->serialPort->available()) {
+                char c = this->serialPort->read();
+                if (GPS->encode(c)) {
+                    if (GPS->location.isUpdated()) {
+                        this->data.latitude = GPS->location.lat();
+                        this->data.longitude = GPS->location.lng();
+                        this->data.altitude = GPS->altitude.meters();
+                        this->data.speed = GPS->speed.kmph();
+                        this->data.course = GPS->course.deg();
+                        this->data.satellites = GPS->satellites.value();
+                        this->data.hdop = GPS->hdop.hdop();
+                        this->data.time = GPS->time.value();
+                        this->data.date = GPS->date.value();
+                    }
+                    return;
+                }
             }
         }
     }

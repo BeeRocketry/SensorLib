@@ -37,8 +37,8 @@
 #define FIFO_DATA_OUT_TEMP_L 0x7B
 #define FIFO_DATA_OUT_TEMP_H 0x7C
 
-#define PRES_SENS 4096.0
-#define TEMP_SENS 100.0
+#define PRES_SENS 4096.0f
+#define TEMP_SENS 100.0f
 
 typedef enum LPS_OUTPUT_DATA_RATE : uint8_t {
     LPS_OUTPUTDATARATE_ONESHOT = 0b000,

@@ -5,8 +5,8 @@ LPS22HH::LPS22HH(I2Class* _i2c) {
 }
 
 void LPS22HH::LPSInit(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu, LPS_LOWNOISE lpsLowNoise){
-    this->setCTRL_REG1(odrRate, lpfp, bdu);
     this->setCTRL_REG2(lpsLowNoise);
+    this->setCTRL_REG1(odrRate, lpfp, bdu);
 }
 
 uint8_t LPS22HH::lpsReadBytes(uint8_t regadr, uint8_t* temp, uint8_t length, uint16_t timeout){
@@ -33,7 +33,7 @@ float LPS22HH::getPressure() {
     this->lpsReadBytes(PRESSURE_OUT_XL, buffer, 3, TIMEOUT_I2C);
     press_data = buffer[0] | ((uint32_t) buffer[1] << 8) | ((uint32_t) buffer[2] << 16);
     
-    return (float)press_data/PRES_SENS;
+    return (float)(press_data / PRES_SENS);
 }
 
 float LPS22HH::getTemperature() {
@@ -42,7 +42,7 @@ float LPS22HH::getTemperature() {
     
     this->lpsReadBytes(TEMP_OUT_L, buffer, 2);
     temp_data = buffer[0] | (uint16_t) buffer[1] << 8;
-    return (float)temp_data/TEMP_SENS;
+    return (float)(temp_data / TEMP_SENS);
 }
 
 float LPS22HH::getAltitude(float pressure){
