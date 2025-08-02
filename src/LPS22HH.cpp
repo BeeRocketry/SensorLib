@@ -30,8 +30,8 @@ float LPS22HH::getPressure() {
     uint8_t buffer[3] = {0};
     uint32_t press_data = 0;
 
-    this->lpsReadBytes(PRESSURE_OUT_XL, buffer, 3, TIMEOUT_I2C);
-    press_data = buffer[0] | ((uint32_t) buffer[1] << 8) | ((uint32_t) buffer[2] << 16);
+    this->lpsReadBytes(PRESSURE_OUT_XL | 0x80, buffer, 3, TIMEOUT_I2C);
+    press_data = (uint32_t)buffer[0] | ((uint32_t)buffer[1] << 8) | ((uint32_t)buffer[2] << 16);;
     
     return (float)(press_data / PRES_SENS);
 }
@@ -40,8 +40,8 @@ float LPS22HH::getTemperature() {
     uint8_t buffer[2] = {0};
     int16_t temp_data = 0;
     
-    this->lpsReadBytes(TEMP_OUT_L, buffer, 2);
-    temp_data = buffer[0] | (uint16_t) buffer[1] << 8;
+    this->lpsReadBytes(TEMP_OUT_L | 0x80, buffer, 2);
+    temp_data = (int16_t)(buffer[0] | ((uint16_t)buffer[1] << 8));
     return (float)(temp_data / TEMP_SENS);
 }
 
