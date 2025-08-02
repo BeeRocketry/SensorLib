@@ -13,7 +13,7 @@
 #define REG_FIFO_CONFIG2 0x18
 #define REG_PWR_CTRL 0x1B
 #define REG_OSR 0x1C
-#define BMP_CHIPADR 0x76
+#define BMP_CHIPADR 0xF7
 #define REG_WhoAmI 0x00
 #define REG_STATUS 0x03
 #define REG_ODR 0x1D

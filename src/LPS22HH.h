@@ -6,7 +6,7 @@
 
 #define SeaLevelhPa 1013.25
 
-#define CHIP_ADDRESS 0x5D
+#define CHIP_ADDRESS 0x5C
 
 #define INTERRUPT_CFG 0x0B
 #define THS_P_L 0x0C
