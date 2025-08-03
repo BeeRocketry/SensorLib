@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
-#include "SoftwareSerial.h"
+#include <SoftwareSerial.h>
 #include <string>
 
 #define MAX_TX_BUFFER_SIZE 200L

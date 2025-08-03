@@ -2,10 +2,10 @@
 #define L76_H
 
 #include <Arduino.h>
-#include "HardwareSerial.h"
-#include "TinyGPSPlus.h"
+#include <HardwareSerial.h>
+#include <TinyGPSPlus.h>
 #include "DataTypes.h"
-#include "SoftwareSerial.h"
+#include <SoftwareSerial.h>
 
 class L76 {
 private:
