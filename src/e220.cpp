@@ -1271,8 +1271,9 @@ RF_Msg E220::receive() const{
         if(ret > 0){
             uint8_t data = 0;
 
-            if(isSoftware)
+            if(isSoftware){
                 data = this->RFSoftSerialPort->read();
+            }
             else
                 data = this->RFSerialPort->read();
 
@@ -1332,9 +1333,11 @@ RF_Msg E220::receive() const{
         managedDelay(2);
     }
 
-    uint8_t crc = calculateCRC8(msg.buffer, size);
+    uint8_t crc = calculateCRC8(msg.buffer, size - 1);
 
     if(crc != msg.buffer[size - 1]){
+        this->DebuggerPort->print(F("packet crc: ")); this->DebuggerPort->println(msg.buffer[size - 1]);
+        this->DebuggerPort->print(F("calculated crc: ")); this->DebuggerPort->println(crc);
         this->DebuggerPort->println(F("Paket CRC Uyuşmuyor"));
         return RF_Msg{E220_CrcBroken};
     }
@@ -1343,6 +1346,8 @@ RF_Msg E220::receive() const{
     msg.size = size;
 
     msg.status = E220_Success;
+
+    clearSerialBuffer();
 
     return msg;
 }
@@ -1356,12 +1361,13 @@ Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const u
     }
 
     uint8_t buffer[size + 7];
+    uint8_t crc = calculateCRC8(data, size);
+
     buffer[0] = AddressHigh;
     buffer[1] = AddressLow;
     buffer[2] = Channel;
     memcpy(&buffer[3], data, size);
-
-    uint8_t crc = calculateCRC8(buffer, size + 3);
+    
     buffer[size + 3] = crc;
     buffer[size + 4] = RF_PACKET_SPEC_HIGH;
     buffer[size + 5] = RF_PACKET_SPEC_MID;
@@ -1374,8 +1380,9 @@ Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const u
     this->_paramConfs.packetStartTimeStamp = millis();
     this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
 
-    if(isSoftware)
+    if(isSoftware){
         this->RFSoftSerialPort->write((uint8_t *)buffer, size + 7);
+    }
     else
         this->RFSerialPort->write((uint8_t *)buffer, size + 7);
 
