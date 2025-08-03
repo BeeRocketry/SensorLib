@@ -30,7 +30,7 @@ float LPS22HH::getPressure() {
     uint8_t buffer[3] = {0};
     uint32_t press_data = 0;
 
-    this->lpsReadBytes(PRESSURE_OUT_XL, buffer, 3, TIMEOUT_I2C);
+    this->lpsReadBytes(PRESSURE_OUT_XL | 0x80, buffer, 3, TIMEOUT_I2C);
     press_data = (uint32_t)buffer[0] | ((uint32_t)buffer[1] << 8) | ((uint32_t)buffer[2] << 16);;
     
     return (float)(press_data / PRES_SENS);
@@ -40,7 +40,7 @@ float LPS22HH::getTemperature() {
     uint8_t buffer[2] = {0};
     int16_t temp_data = 0;
     
-    this->lpsReadBytes(TEMP_OUT_L, buffer, 2);
+    this->lpsReadBytes(TEMP_OUT_L | 0x80, buffer, 2);
     temp_data = (int16_t)(buffer[0] | ((uint16_t)buffer[1] << 8));
     return (float)(temp_data / TEMP_SENS);
 }
@@ -68,21 +68,21 @@ void LPS22HH::setCTRL_REG1(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_B
 
     this->lpsReadBytes(CTRL_REG1, &temp, 1);
 
-    temp &= (uint8_t)0b000 << 4;
+    temp &= ~((uint8_t)0b111 << 4);
     temp |= ((uint8_t)odrRate << 4);
 
     if(lpfp == LPS_EN_LPFP::LPS_LPFPENABLE){
         temp |= ((uint8_t)lpfp << 3);
     }
     else if(lpfp == LPS_EN_LPFP::LPS_LPFPDISABLE){
-        temp &= ((uint8_t)lpfp << 3);
+        temp &= ~(0b1 << 3);
     }
 
     if(bdu == LPS_BDU::LPS_BDU_NONCONT){
         temp |= ((uint8_t)bdu << 1);
     }
     else if(bdu == LPS_BDU::LPS_BDU_CONT){
-        temp &= ((uint8_t)bdu << 1);
+        temp &= ~(0b1 << 1);
     }
 
     this->lpsWriteByte(CTRL_REG1, temp);
@@ -97,14 +97,14 @@ void LPS22HH::setCTRL_REG2(LPS_LOWNOISE lpsLowNoise, LPS_AUTOINC autoInc) {
         temp |= ((uint8_t)lpsLowNoise << 1);
     }
     else if(lpsLowNoise == LPS_LOWNOISE::LPS_LOW_CURRENT){
-        temp &= ((uint8_t)lpsLowNoise << 1);
+        temp &= ~(0b1 << 1);
     }
 
     if(autoInc == LPS_AUTOINC::LPS_AUTO_ON){
         temp |= ((uint8_t)autoInc << 4);
     }
     else if(autoInc == LPS_AUTOINC::LPS_AUTO_OFF){
-        temp &= ((uint8_t)autoInc << 4);
+        temp &= ~(0b1 << 4);
     }
     
     this->lpsWriteByte(CTRL_REG2, temp);
