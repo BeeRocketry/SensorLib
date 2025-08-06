@@ -37,8 +37,8 @@
 #define FIFO_DATA_OUT_TEMP_L 0x7B
 #define FIFO_DATA_OUT_TEMP_H 0x7C
 
-#define PRES_SENS 4096.0
-#define TEMP_SENS 100.0
+#define PRES_SENS 4096.0f
+#define TEMP_SENS 100.0f
 
 typedef enum LPS_OUTPUT_DATA_RATE : uint8_t {
     LPS_OUTPUTDATARATE_ONESHOT = 0b000,
@@ -66,6 +66,11 @@ typedef enum LPS_LOWNOISE : uint8_t {
     LPS_LOW_NOISE = 0b1,
 }LPS_LOWNOISE;
 
+typedef enum LPS_AUTOINC : uint8_t {
+    LPS_AUTO_OFF = 0b0,
+    LPS_AUTO_ON = 0b1
+}LPS_AUTOINC;
+
 class LPS22HH {
 private:
     I2Class* i2c;
@@ -76,7 +81,7 @@ public:
     uint8_t lpsReadBytes(uint8_t regadr, uint8_t* temp, uint8_t length, uint16_t timeout = TIMEOUT_I2C);
     bool lpsWriteByte(uint8_t regadr, uint8_t data);
     void setCTRL_REG1(LPS_OUTPUT_DATA_RATE odrRate, LPS_EN_LPFP lpfp, LPS_BDU bdu);
-    void setCTRL_REG2(LPS_LOWNOISE lpsLowNoise);
+    void setCTRL_REG2(LPS_LOWNOISE lpsLowNoise, LPS_AUTOINC autoInc = LPS_AUTO_ON);
     void resetLPS();
     float getPressure(); 
     float getTemperature();

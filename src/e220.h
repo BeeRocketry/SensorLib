@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include <SoftwareSerial.h>
 #include <string>
 
 #define MAX_TX_BUFFER_SIZE 200L
@@ -252,6 +253,7 @@ class E220{
 private:
     // Config Variables
     HardwareSerial *RFSerialPort = nullptr;
+    SoftwareSerial *RFSoftSerialPort = nullptr;
     HardwareSerial *DebuggerPort = nullptr;
     ConfigRF *tempConfig = nullptr;
 
@@ -313,6 +315,8 @@ private:
     bool rssiByteSet = false;
 
     uint8_t maxTxBufferSize = 0;
+
+    bool isSoftware = false;
     
 public:
 // Constructors
@@ -322,6 +326,7 @@ public:
     E220(HardwareSerial *serialPort, const uint8_t& M0_Pin, const uint8_t& M1_Pin, HardwareSerial *debugger);
     E220(HardwareSerial *serialPort, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin);
     E220(HardwareSerial *serialPort, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin, HardwareSerial *debugger);
+    E220(SoftwareSerial *serialPort, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin, HardwareSerial *debugger);
     E220(const uint8_t& TX_Pin, const uint8_t& RX_Pin, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin);
     E220(const uint8_t& TX_Pin, const uint8_t& RX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin);
     E220(const uint8_t& TX_Pin, const uint8_t& RX_Pin);

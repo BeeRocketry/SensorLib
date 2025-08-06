@@ -2,14 +2,16 @@
 #define L76_H
 
 #include <Arduino.h>
-#include "HardwareSerial.h"
-#include "TinyGPSPlus.h"
+#include <HardwareSerial.h>
+#include <TinyGPSPlus.h>
 #include "DataTypes.h"
+#include <SoftwareSerial.h>
 
 class L76 {
 private:
     TinyGPSPlus* GPS = nullptr;
     HardwareSerial *serialPort = nullptr;
+    SoftwareSerial *serialSoftPort = nullptr;
     HardwareSerial *debuggerPort = nullptr;
 
     struct _paramConfs{
@@ -20,9 +22,13 @@ private:
 
     GpsData data;
 
+    bool isSoftware = false;
+
 public:
     L76(HardwareSerial *serial);
     L76(HardwareSerial *serial, HardwareSerial *debugger);
+    L76(SoftwareSerial *serial);
+    L76(SoftwareSerial *serial, HardwareSerial *debugger);
     L76(uint8_t rxPin, uint8_t txPin);
 
     ~L76();

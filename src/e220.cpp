@@ -60,6 +60,22 @@ E220::E220(HardwareSerial *serialPort, const uint8_t& AUX_Pin, const uint8_t& M0
     this->auxPinSet = true;
 }
 
+E220::E220(SoftwareSerial *serialPort, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin, HardwareSerial *debugger){
+    this->RFSoftSerialPort = serialPort;
+    this->DebuggerPort = debugger;
+
+    this->RFSoftSerialPort->begin(9600);
+
+    isSoftware = true;
+
+    //this->DebuggerPort->end();
+    //this->DebuggerPort->begin(this->_debuggerConfs.baudRate, this->_debuggerConfs.parity);
+
+    setPinConfig(M0_Pin, M1_Pin, AUX_Pin);
+    this->mPinSet = true;
+    this->auxPinSet = true;
+}
+
 E220::E220(const uint8_t& TX_Pin, const uint8_t& RX_Pin, const uint8_t& AUX_Pin, const uint8_t& M0_Pin, const uint8_t& M1_Pin){
     this->RFSerialPort = new HardwareSerial(TX_Pin, RX_Pin);
     this->dynamicRFPortSet = true;
@@ -111,8 +127,15 @@ uint8_t E220::calculateCRC8(const uint8_t *data, const size_t& length) const {
 }
 
 void E220::clearSerialBuffer() const{
-    while (RFSerialPort->available() > 0) {
-        RFSerialPort->read();
+    if(isSoftware){
+        while (RFSoftSerialPort->available() > 0) {
+            RFSoftSerialPort->read();
+        }
+    }
+    else{
+        while (RFSerialPort->available() > 0) {
+            RFSerialPort->read();
+        }
     }
 }
 
@@ -304,50 +327,98 @@ Status E220::setAirDataRate(const RF_AIR_DATA &airdatarate){
 }
 
 Status E220::setSerialBaudRateBegin() const{
-    switch (this->_devConfs.RFReg0.UARTBaud)
-    {
-    case UARTBAUDRATE_1200:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(1200, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_2400:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(2400, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_4800:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(4800, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_9600:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(9600, setSerialParityBegin());
-        break;
+    if(isSoftware){
+        switch (this->_devConfs.RFReg0.UARTBaud)
+        {
+        case UARTBAUDRATE_1200:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(1200);
+            break;
     
-    case UARTBAUDRATE_19200:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(19200, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_38400:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(38400, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_57600:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(57600, setSerialParityBegin());
-        break;
-
-    case UARTBAUDRATE_115200:
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(115200, setSerialParityBegin());
-        break;
+        case UARTBAUDRATE_2400:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(2400);
+            break;
+    
+        case UARTBAUDRATE_4800:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(4800);
+            break;
+    
+        case UARTBAUDRATE_9600:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(9600);
+            break;
+        
+        case UARTBAUDRATE_19200:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(19200);
+            break;
+    
+        case UARTBAUDRATE_38400:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(38400);
+            break;
+    
+        case UARTBAUDRATE_57600:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(57600);
+            break;
+    
+        case UARTBAUDRATE_115200:
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(115200);
+            break;
+        }
+    
+        return E220_Success;
     }
-
-    return E220_Success;
+    else{
+        switch (this->_devConfs.RFReg0.UARTBaud)
+        {
+        case UARTBAUDRATE_1200:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(1200, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_2400:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(2400, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_4800:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(4800, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_9600:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(9600, setSerialParityBegin());
+            break;
+        
+        case UARTBAUDRATE_19200:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(19200, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_38400:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(38400, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_57600:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(57600, setSerialParityBegin());
+            break;
+    
+        case UARTBAUDRATE_115200:
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(115200, setSerialParityBegin());
+            break;
+        }
+    
+        return E220_Success;
+    }
 }
 
 uint8_t E220::setSerialParityBegin() const{
@@ -658,8 +729,14 @@ Status E220::setSettings(void) const{
 
         RF_WaitAUX();
 
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(9600);
+        if(isSoftware){
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(9600);
+        }
+        else{
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(9600);
+        }
         managedDelay(200);
 
         RF_Operating_Config();
@@ -676,7 +753,10 @@ Status E220::setSettings(void) const{
         MesArr[7] = this->_devConfs.Channel;
         MesArr[8] = Reg3Byte;
 
-        RFSerialPort->write((uint8_t *)MesArr, sizeof(MesArr) / sizeof(MesArr[0]));
+        if(isSoftware)
+            RFSoftSerialPort->write((uint8_t *)MesArr, sizeof(MesArr) / sizeof(MesArr[0]));
+        else
+            RFSerialPort->write((uint8_t *)MesArr, sizeof(MesArr) / sizeof(MesArr[0]));
 
         RF_WaitAUX();
 
@@ -712,8 +792,15 @@ Status E220::getSettings(void){
 
         RF_WaitAUX();
 
-        this->RFSerialPort->end();
-        this->RFSerialPort->begin(9600);
+        if(isSoftware){
+            this->RFSoftSerialPort->end();
+            this->RFSoftSerialPort->begin(9600);
+        }
+        else{
+            this->RFSerialPort->end();
+            this->RFSerialPort->begin(9600);
+        }
+
         managedDelay(200);
         RF_Operating_Config();
 
@@ -723,17 +810,32 @@ Status E220::getSettings(void){
         sendpack[1] = 0x00;
         sendpack[2] = 6;
 
-        RFSerialPort->write((uint8_t *)sendpack, sizeof(sendpack) / sizeof(sendpack[0]));
+        if(isSoftware)
+            RFSoftSerialPort->write((uint8_t *)sendpack, sizeof(sendpack) / sizeof(sendpack[0]));
+        else
+            RFSerialPort->write((uint8_t *)sendpack, sizeof(sendpack) / sizeof(sendpack[0]));
         
         long startTime = millis();
-        while(RFSerialPort->available() < sizeof(MesArr)){
-            if(millis() - startTime > this->_paramConfs.serialTimeout){
-                return E220_Timeout;
+        if(isSoftware){
+            while(RFSoftSerialPort->available() < sizeof(MesArr)){
+                if(millis() - startTime > this->_paramConfs.serialTimeout){
+                    return E220_Timeout;
+                }
+                managedDelay(20);
             }
-            managedDelay(20);
-        }
 
-        RFSerialPort->readBytes(MesArr, sizeof(MesArr));
+            RFSoftSerialPort->readBytes(MesArr, sizeof(MesArr));
+        }
+        else{
+            while(RFSerialPort->available() < sizeof(MesArr)){
+                if(millis() - startTime > this->_paramConfs.serialTimeout){
+                    return E220_Timeout;
+                }
+                managedDelay(20);
+            }
+
+            RFSerialPort->readBytes(MesArr, sizeof(MesArr));
+        }
 
         this->tempConfig->AddressHigh = MesArr[3];
         this->tempConfig->AddressLow = MesArr[4];
@@ -822,7 +924,10 @@ Status E220::packageTimerCheck() const{
 
 E220::~E220(){
     if(this->dynamicRFPortSet)
-        delete this->RFSerialPort;
+        if(!isSoftware)
+            delete this->RFSerialPort;
+        else
+            delete this->RFSoftSerialPort;
 
     if(this->mPinSet)
         delete this->tempConfig;
@@ -930,17 +1035,31 @@ Status E220::receiveSingleData(uint8_t *data) const {
     RF_WaitAUX();
 
     unsigned long t = millis();
-    while(this->RFSerialPort->available() == 0){
-        if(millis() - t > 1000){
-            this->DebuggerPort->println(F("Veri Okuma Zaman Asimina Ugradi..."));
-            return E220_Timeout;
+    if(isSoftware){
+        while(this->RFSoftSerialPort->available() == 0){
+            if(millis() - t > 1000){
+                this->DebuggerPort->println(F("Veri Okuma Zaman Asimina Ugradi..."));
+                return E220_Timeout;
+            }
+            managedDelay(20);
         }
-        managedDelay(20);
+    }
+    else{
+        while(this->RFSerialPort->available() == 0){
+            if(millis() - t > 1000){
+                this->DebuggerPort->println(F("Veri Okuma Zaman Asimina Ugradi..."));
+                return E220_Timeout;
+            }
+            managedDelay(20);
+        }
     }
 
     RF_WaitAUX();
 
-    *data = this->RFSerialPort->read();
+    if(isSoftware)
+        *data = this->RFSoftSerialPort->read();
+    else
+        *data = this->RFSerialPort->read();
  
     clearSerialBuffer();
     this->DebuggerPort->println(F("Veri Alindi..."));
@@ -950,21 +1069,40 @@ Status E220::receiveSingleData(uint8_t *data) const {
 Status E220::receiveDataPacket(uint8_t *data, const size_t& size) const{
     unsigned long t = millis();
 
-    while(this->RFSerialPort->available() < size + 1){
-        if(this->RFSerialPort->available() == 0 && millis() - t > 300){
-            this->DebuggerPort->println(F("Herhangi bir Veri Paketi gelmedi..."));
-            return E220_NoMessage;
+    if(isSoftware){
+        while(this->RFSoftSerialPort->available() < size + 1){
+            if(this->RFSoftSerialPort->available() == 0 && millis() - t > 300){
+                this->DebuggerPort->println(F("Herhangi bir Veri Paketi gelmedi..."));
+                return E220_NoMessage;
+            }
+            else if(millis() - t > this->_paramConfs.serialTimeout){
+                //this->DebuggerPort->println(F("Veri okuma zaman asimina ugradi..."));
+                return E220_Timeout;
+            }
+            managedDelay(20);
         }
-        else if(millis() - t > this->_paramConfs.serialTimeout){
-            //this->DebuggerPort->println(F("Veri okuma zaman asimina ugradi..."));
-            return E220_Timeout;
-        }
-        managedDelay(20);
+
+        RF_WaitAUX();
+
+        this->RFSoftSerialPort->readBytes(data, size + 1);
     }
+    else{
+        while(this->RFSerialPort->available() < size + 1){
+            if(this->RFSerialPort->available() == 0 && millis() - t > 300){
+                this->DebuggerPort->println(F("Herhangi bir Veri Paketi gelmedi..."));
+                return E220_NoMessage;
+            }
+            else if(millis() - t > this->_paramConfs.serialTimeout){
+                //this->DebuggerPort->println(F("Veri okuma zaman asimina ugradi..."));
+                return E220_Timeout;
+            }
+            managedDelay(20);
+        }
 
-    RF_WaitAUX();
+        RF_WaitAUX();
 
-    this->RFSerialPort->readBytes(data, size + 1);
+        this->RFSerialPort->readBytes(data, size + 1);
+    }
 
     uint8_t crc = 0x00;
     crc = calculateCRC8(data, size);
@@ -992,8 +1130,12 @@ Status E220::sendFixedSingleData(const uint8_t& AddressHigh, const uint8_t& Addr
     RF_WaitAUX();
 
     this->_paramConfs.packetStartTimeStamp = millis();
-    this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime; 
-    this->RFSerialPort->write((uint8_t *)packet, sizeof(packet) / sizeof(packet[0]));
+    this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
+
+    if(isSoftware)
+        this->RFSoftSerialPort->write((uint8_t *)packet, sizeof(packet) / sizeof(packet[0]));
+    else
+        this->RFSerialPort->write((uint8_t *)packet, sizeof(packet) / sizeof(packet[0]));
 
     RF_WaitAUX();
 
@@ -1011,7 +1153,11 @@ Status E220::sendTransparentSingleData(const uint8_t& data){
 
     this->_paramConfs.packetStartTimeStamp = millis();
     this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
-    this->RFSerialPort->write(data);
+
+    if(isSoftware)
+        this->RFSoftSerialPort->write(data);
+    else
+        this->RFSerialPort->write(data);
 
     RF_WaitAUX();
     
@@ -1046,7 +1192,11 @@ Status E220::sendFixedDataPacket(const uint8_t& AddressHigh, const uint8_t& Addr
 
     this->_paramConfs.packetStartTimeStamp = millis();
     this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
-    this->RFSerialPort->write((uint8_t *)packet, sizeof(packet));
+
+    if(isSoftware)
+        this->RFSoftSerialPort->write((uint8_t *)packet, sizeof(packet));
+    else
+        this->RFSerialPort->write((uint8_t *)packet, sizeof(packet));
 
     RF_WaitAUX();
 
@@ -1082,7 +1232,11 @@ Status E220::sendTransparentDataPacket(uint8_t *data, const size_t& size){
 
     this->_paramConfs.packetStartTimeStamp = millis();
     this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
-    this->RFSerialPort->write((uint8_t *)packet, sizeof(packet));
+
+    if(isSoftware)
+        this->RFSoftSerialPort->write((uint8_t *)packet, sizeof(packet));
+    else
+        this->RFSerialPort->write((uint8_t *)packet, sizeof(packet));
 
     RF_WaitAUX();
 
@@ -1108,19 +1262,32 @@ RF_Msg E220::receive() const{
     int startTime = millis();
 
     while(true){
-        if(this->RFSerialPort->available() > 0){
-            uint8_t data = this->RFSerialPort->read();
+        int ret = -1;
+        if(isSoftware)
+            ret = this->RFSoftSerialPort->available();
+        else
+            ret = this->RFSerialPort->available();
+
+        if(ret > 0){
+            uint8_t data = 0;
+
+            if(isSoftware){
+                data = this->RFSoftSerialPort->read();
+            }
+            else
+                data = this->RFSerialPort->read();
 
             if(data != 'c'){
                 statusFlag = true;
             }
 
             if(statusFlag == false && i == 2){
+                this->DebuggerPort->println(F("StatusText tespit edildi."));
                 isStatus = true;
                 msg.isMessage = true;
             }
 
-            if(finish == true){
+            if(this->rssiByteSet == true && finish == true){
                 msg.rssiValue = data;
                 msg.rssiDbm = -((float)data) / 2.0f;
                 break;
@@ -1143,11 +1310,6 @@ RF_Msg E220::receive() const{
             }
 
             if(highCheck && midCheck && lowCheck){
-                msg.buffer[i] = data;
-                if(isStatus){
-                    msg.message += (char)data;
-                }
-
                 if(this->rssiByteSet == false){
                     break;
                 }
@@ -1156,9 +1318,10 @@ RF_Msg E220::receive() const{
                 continue;
             }
 
-            msg.buffer[i++] = data;
-            if(isStatus){
-                msg.message += (char)data;
+            if(highCheck != true){
+                msg.buffer[i++] = data;
+                if(isStatus && i > 2)
+                    msg.message += (char)data;
             }
         }
 
@@ -1170,34 +1333,41 @@ RF_Msg E220::receive() const{
         managedDelay(2);
     }
 
-    uint8_t crc = calculateCRC8(msg.buffer, size);
+    uint8_t crc = calculateCRC8(msg.buffer, size - 1);
 
     if(crc != msg.buffer[size - 1]){
+        this->DebuggerPort->print(F("packet crc: ")); this->DebuggerPort->println(msg.buffer[size - 1]);
+        this->DebuggerPort->print(F("calculated crc: ")); this->DebuggerPort->println(crc);
         this->DebuggerPort->println(F("Paket CRC Uyuşmuyor"));
         return RF_Msg{E220_CrcBroken};
     }
 
     msg.crc = crc;
-    msg.size = size - 1;
+    msg.size = size;
 
     msg.status = E220_Success;
+
+    clearSerialBuffer();
 
     return msg;
 }
 
 Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const uint8_t& Channel, const uint8_t* data, int size){
+    RF_PackageTimerCheck();
+    
     if(size > this->maxTxBufferSize - 7){
         this->DebuggerPort->println(F("Paket Boyutu Cok Buyuk !!!"));
         return E220_BigPacket;
     }
 
     uint8_t buffer[size + 7];
+    uint8_t crc = calculateCRC8(data, size);
+
     buffer[0] = AddressHigh;
     buffer[1] = AddressLow;
     buffer[2] = Channel;
     memcpy(&buffer[3], data, size);
-
-    uint8_t crc = calculateCRC8(buffer, size + 3);
+    
     buffer[size + 3] = crc;
     buffer[size + 4] = RF_PACKET_SPEC_HIGH;
     buffer[size + 5] = RF_PACKET_SPEC_MID;
@@ -1209,7 +1379,12 @@ Status E220::send(const uint8_t& AddressHigh, const uint8_t& AddressLow, const u
 
     this->_paramConfs.packetStartTimeStamp = millis();
     this->_paramConfs.packetEndTimeStamp = this->_paramConfs.packetStartTimeStamp + packageTime;
-    this->RFSerialPort->write((uint8_t *)buffer, size + 7);
+
+    if(isSoftware){
+        this->RFSoftSerialPort->write((uint8_t *)buffer, size + 7);
+    }
+    else
+        this->RFSerialPort->write((uint8_t *)buffer, size + 7);
 
     RF_WaitAUX();
 
@@ -1229,7 +1404,7 @@ Status E220::sendStatus(const uint8_t& AddressHigh, const uint8_t& AddressLow, c
 
     memcpy(&buffer[3], message.c_str(), message.length());
 
-    send(AddressHigh, AddressLow, Channel, buffer, message.length() + 3);
+    return send(AddressHigh, AddressLow, Channel, buffer, message.length() + 3);
 }
 
 Status E220::findLeastFrequency(){
@@ -1279,17 +1454,32 @@ float E220::checkFreq(const RF_FREQ &freq){
 
     managedDelay(100);
 
-    this->RFSerialPort->write((uint8_t *)sendBuffer, sizeof(sendBuffer) / sizeof(sendBuffer[0]));
-
-    long startTime = millis();
-    while(RFSerialPort->available() < sizeof(buffer)){
-        if(millis() - startTime > this->_paramConfs.serialTimeout){
-            return E220_Timeout;
+    if(isSoftware){
+        this->RFSoftSerialPort->write((uint8_t *)sendBuffer, sizeof(sendBuffer) / sizeof(sendBuffer[0]));
+    
+        long startTime = millis();
+        while(RFSoftSerialPort->available() < sizeof(buffer)){
+            if(millis() - startTime > this->_paramConfs.serialTimeout){
+                return E220_Timeout;
+            }
+            managedDelay(20);
         }
-        managedDelay(20);
+    
+        RFSoftSerialPort->readBytes(buffer, sizeof(buffer));
     }
-
-    RFSerialPort->readBytes(buffer, sizeof(buffer));
+    else{
+        this->RFSerialPort->write((uint8_t *)sendBuffer, sizeof(sendBuffer) / sizeof(sendBuffer[0]));
+    
+        long startTime = millis();
+        while(RFSerialPort->available() < sizeof(buffer)){
+            if(millis() - startTime > this->_paramConfs.serialTimeout){
+                return E220_Timeout;
+            }
+            managedDelay(20);
+        }
+    
+        RFSerialPort->readBytes(buffer, sizeof(buffer));
+    }
 
     rssiValue = -1.0f * (float)buffer[3] / 2.0f;
 
